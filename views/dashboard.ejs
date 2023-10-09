@@ -5,8 +5,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HWMS-Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css" />
   </head>
   <body>
-    <h1>Welcome <%= username %>, you are logged in</h1>
+    <header>
+      <div>Home</div>
+      <div>Logout</div>
+    </header>
+
+    <div class="body-content">
+      <div class="sidebar">
+        <ul>
+          <li><a href="/dashboard?path=desk">Desk</a></li>
+          <li><a href="/dashboard?path=chat">Chat</a></li>
+          <% if (user.role == 'Admin') { %>
+            <li><a href="/dashboard?path=addP">Add Procedure</a></li>
+            <li><a href="/dashboard?path=addS">Add Staff</a></li>
+          <% } %>
+        </ul>
+      </div>
+      <div class="main-content">
+
+        <% if (path === 'desk' || path === null) { %>
+
+          <%- include('partials/desk') %>
+
+        <% } else if (path == 'chat') { %>
+
+          <%- include('partials/chat') %>
+
+        <% } else if (path == 'addP') { %>
+
+          <%- include('partials/addProcedure') %>
+        
+        <% } else if (path == 'addS') { %>
+
+          <%- include('partials/addStaff') %>
+
+        <% } %>
+        
+      </div>
+    </div>
   </body>
 </html>

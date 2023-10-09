@@ -1,0 +1,37 @@
+*{
+    color: white;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+header{
+    background-color: black;
+    height: 10vh;
+}
+
+.body-content{
+    height: 90vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.sidebar{
+    background-color: blue;
+    height: 100%;
+    width: 15%;
+}
+
+.sidebar *{
+    margin: 10px;
+}
+
+.sidebar ul{
+    list-style: none;
+}
+
+.main-content{
+    background-color: red;
+    height: 100%;
+    width: 85%;
+}

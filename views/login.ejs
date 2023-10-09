@@ -5,27 +5,39 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HWMS-Login</title>
+    <link rel="stylesheet" href="./css/root_var.css">
+    <link rel="stylesheet" href="./css/login.css">
   </head>
   <body>
-    <h1>Please Login Here</h1>
-    <form action="/login" method="post" style="padding: 5px">
-      <input
-        type="text"
-        name="userrname"
-        id="username"
-        style="padding: 5px"
-        placeholder="username"
-      />
-      <input
-        type="text"
-        name="passwd"
-        id="passwd"
-        style="padding: 5px"
-        placeholder="password"
-      />
-      <button type="submit" style="padding: 5px">Login</button>
+
+    <form name="logi_-form" id="login_form" action="/login" method="post">
+      
+      <h2 id="form_header">Staff Login</h2>
+
+      <div class="login_input">
+        <label for="employee_id">Employee ID </label>
+        <input
+          type="text"
+          name="employee_id"
+          id="employee_id"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="login_input">
+        <label for="passwd">Password</label>
+        <input
+          type="text"
+          name="passwd"
+          id="passwd"
+          autocomplete="off"
+        />
+      </div>
+
+      <input type="submit" value="Submit">
+
     </form>
 
-    <a href="/dashboard"> Go to your Dashboard</a>
+
   </body>
 </html>
