@@ -9,12 +9,17 @@ const isAuth = require("./utils/isAuth");
 const path = require("path");
 const mongoose = require("mongoose");
 const mongoDBStore = require("connect-mongodb-session")(session);
+const socketIO = require("socket.io");
+const socketMod = require("./utils/socket");
+const { createServer } = require("http");
 
 // DB URI
 const dbURI = "mongodb://127.0.0.1:27017/hwms";
 
 // Create Express server
+
 const app = express();
+const server = createServer(app);
 
 // Configure cors middleware
 app.use(cors(corsOptions));
@@ -26,17 +31,25 @@ const sessionStore = new mongoDBStore({
 });
 
 // Configure session
-const sessionOptions = {
+const sessionMiddleware = session({
   secret: "mysecretkey",
   resave: false,
-  saveUnitialised: false,
+  saveUnitialized: false,
   cookie: {
     maxAge: 1000 * 60 * 5,
   },
   store: sessionStore,
-};
+});
+app.use(sessionMiddleware);
 
-app.use(session(sessionOptions));
+// Create and configure socket.io server
+const IO = socketIO(server); //creating the server
+IO.engine.use(sessionMiddleware); //linking to the session
+require("./utils/socket")(IO); //pass the IO conn to its controller
+app.use((req, res, next) => {
+  req.IO = IO;
+  next();
+}); //attach the IO conn to each request
 
 // Set EJS as view engine
 app.set("view engine", "ejs");
@@ -70,12 +83,10 @@ app.post("/login", (req, res) => {
         req.session.user = { id: staffer._id, role: staffer.role };
         res.status(200).redirect("/dashboard");
       } else {
-        console.log("Invalid Password");
-        res.status(400).redirect("/");
+        res.status(400).redirect("/"); //Invalid Password
       }
     } else {
-      console.log("Invalid Username");
-      res.status(400).redirect("/");
+      res.status(400).redirect("/"); //Invalid Username
     }
   });
 });
@@ -86,9 +97,9 @@ app.get("/dashboard", isAuth, (req, res) => {
 });
 
 //connect to DB and set up server
-mongoose.connect(dbURI).then((conn) => {
+mongoose.connect(dbURI).then(async (conn) => {
   // Start the server
-  app.listen(process.env.PORT || 3000, () => {
-    console.log("Server is Live!!");
+  server.listen(process.env.PORT || 3000, () => {
+    console.log("Server is Live !!");
   });
 });

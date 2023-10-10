@@ -34,17 +34,24 @@
 
           <%- include('partials/chat') %>
 
-        <% } else if (path == 'addP') { %>
+        <% } else if (path == 'addP' && user.role == 'Admin') { %>
 
           <%- include('partials/addProcedure') %>
         
-        <% } else if (path == 'addS') { %>
+        <% } else if (path == 'addS' && user.role == 'Admin') { %>
 
           <%- include('partials/addStaff') %>
 
+        <% } else { %>
+          <h1>Invalid / Protected Path </h1>
         <% } %>
         
       </div>
     </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+    </script>
   </body>
 </html>
