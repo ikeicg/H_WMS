@@ -5,26 +5,54 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HWMS-Dashboard</title>
+    <link rel="stylesheet" href="/css/root_var.css">
     <link rel="stylesheet" href="/css/dashboard.css" />
   </head>
+
   <body>
     <header>
-      <div>Home</div>
-      <div>Logout</div>
+      <div id="logo">HWMS</div>
+      <div id="logout_btn">Logout</div>
     </header>
 
-    <div class="body-content">
-      <div class="sidebar">
-        <ul>
-          <li><a href="/dashboard?path=desk">Desk</a></li>
-          <li><a href="/dashboard?path=chat">Chat</a></li>
-          <% if (user.role == 'Admin') { %>
-            <li><a href="/dashboard?path=addP">Add Procedure</a></li>
-            <li><a href="/dashboard?path=addS">Add Staff</a></li>
-          <% } %>
-        </ul>
+    <div id="body-content">
+
+      <div id="sidebar">
+      
+        <a class=" <%= (path === 'desk') || (path === null )  ? 'active' : '' %>  sidebar_itm" href="/dashboard?path=desk">
+          Desk
+        </a>
+       
+        <a class=" <%= path === 'chat' ? 'active' : '' %> sidebar_itm" href="/dashboard?path=chat">
+          Chat
+        </a>
+
+        <% if (user.role == 'Admin') { %>
+
+          <a class=" <%= path === 'addP' ? 'active' : '' %> sidebar_itm" href="/dashboard?path=addP">
+            Add Procedure
+          </a>
+
+          <a class=" <%= path === 'addS' ? 'active' : '' %>  sidebar_itm" href="/dashboard?path=addS">
+            Add Staff
+          </a>
+        <% } %>
       </div>
-      <div class="main-content">
+
+      <div id="main-content">
+
+        <div id="dpt_div">
+          <div class="dpt_details">
+            <span class="dpt_name">
+              <%= user.role %> Department
+            </span> 
+            (<%= user.lastname %> 
+            <%= user.firstname %>)
+          </div>
+          <div id="start_shift">
+            Start Shift
+          </div>
+        </div>
 
         <% if (path === 'desk' || path === null) { %>
 

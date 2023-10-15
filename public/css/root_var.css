@@ -1,8 +1,10 @@
 :root {
-    --primary-color: #26AB2F; 
+    --primary-color: #1e7508;
     --secondary-color: #05386b;
     --tertiary-color: #6E6E6E;
-    --white: #ffffff;
+    --tertiary-color-2: #464646; 
+    --primary-font-family: Verdana, Geneva, Tahoma, sans-serif;
+    --box-shadow: 0 0 3px black;
   }
 
 *{
