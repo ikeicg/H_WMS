@@ -97,3 +97,7 @@ header #logout_btn{
     padding: 7px;
     border-radius: 5px;
 }
+
+.pointer{
+    cursor: pointer;
+}

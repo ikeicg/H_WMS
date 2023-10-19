@@ -1,14 +1,24 @@
 const socketHub = {};
 
-module.exports = (IO) => {
+const serverConfig = (IO) => {
   IO.on("connection", (socket) => {
-    let uID = socket.request.session.user.id;
-    socketHub[uID] = socket.id;
-    console.log("connection ", socketHub);
+    let uID = "";
+    if (socket.request.session.user) {
+      uID = socket.request.session.user.id;
+      socketHub[uID] = socket.id;
+      console.log("connection ", socketHub);
+    }
 
     socket.on("disconnect", () => {
-      delete socketHub[uID];
+      if (uID) {
+        delete socketHub[uID];
+      }
       console.log("disconnection ", socketHub);
     });
   });
+};
+
+module.exports = {
+  serverConfig,
+  socketHub,
 };

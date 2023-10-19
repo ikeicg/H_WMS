@@ -3,14 +3,13 @@ const express = require("express"); //Express Framework
 const cors = require("cors"); //Cross Origin Capabilities
 const corsOptions = require("./utils/corsOptions"); //CORS options
 const session = require("express-session"); //Session management
-const Staff = require("./models/staff");
 const setUser = require("./middleware/setUser");
-const isAuth = require("./utils/isAuth");
+const authRoutes = require("./routes/authRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const path = require("path");
 const mongoose = require("mongoose");
 const mongoDBStore = require("connect-mongodb-session")(session);
 const socketIO = require("socket.io");
-const socketMod = require("./utils/socket");
 const { createServer } = require("http");
 
 // DB URI
@@ -43,9 +42,9 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 
 // Create and configure socket.io server
-const IO = socketIO(server); //creating the server
-IO.engine.use(sessionMiddleware); //linking to the session
-require("./utils/socket")(IO); //pass the IO conn to its controller
+const IO = socketIO(server); //creating the IO server with the express server
+IO.engine.use(sessionMiddleware); //handshake IO to the session
+require("./utils/socket").serverConfig(IO); //pass the IO conn to its controller
 app.use((req, res, next) => {
   req.IO = IO;
   next();
@@ -68,33 +67,11 @@ app.use(express.static(path.join(__dirname, "public")));
 // Set User
 app.use(setUser);
 
-// Define routes here
+// Define route middlewares here
 
-// Home route
-app.get("/", (req, res) => {
-  res.render("login");
-});
+app.use(authRoutes);
 
-// Login route
-app.post("/login", (req, res) => {
-  Staff.findOne({ employeeId: req.body.employee_id }).then((staffer) => {
-    if (staffer) {
-      if (staffer.password == req.body.passwd) {
-        req.session.user = { id: staffer._id, role: staffer.role };
-        res.status(200).redirect("/dashboard");
-      } else {
-        res.status(400).redirect("/"); //Invalid Password
-      }
-    } else {
-      res.status(400).redirect("/"); //Invalid Username
-    }
-  });
-});
-
-app.get("/dashboard", isAuth, (req, res) => {
-  const path = req.query.path || null;
-  res.render("dashboard", { path: path, user: req.user });
-});
+app.use(dashboardRoutes);
 
 //connect to DB and set up server
 mongoose.connect(dbURI).then(async (conn) => {
