@@ -1,22 +1,22 @@
 // Initialize dependencies
-const express = require("express"); //Express Framework
-const cors = require("cors"); //Cross Origin Capabilities
-const corsOptions = require("./utils/corsOptions"); //CORS options
-const session = require("express-session"); //Session management
-const setUser = require("./middleware/setUser");
-const authRoutes = require("./routes/authRoutes");
-const dashboardRoutes = require("./routes/dashboardRoutes");
-const path = require("path");
-const mongoose = require("mongoose");
-const mongoDBStore = require("connect-mongodb-session")(session);
-const socketIO = require("socket.io");
-const { createServer } = require("http");
+const express = require("express"); // Express Framework
+const cors = require("cors"); // Cross Origin Capabilities
+const corsOptions = require("./utils/corsOptions"); // CORS options
+const session = require("express-session"); // Session management
+const setUser = require("./middleware/setUser"); // Add current user to the request
+const authRoutes = require("./routes/authRoutes"); // Connect authentication routes
+const dashboardRoutes = require("./routes/dashboardRoutes"); // Connect dashboar routes
+const path = require("path"); // Path library for building paths 
+const mongoose = require("mongoose"); // Mongoose Library 
+const mongoDBStore = require("connect-mongodb-session")(session); // Storing session in mongodb database
+const socketIO = require("socket.io"); // SocketIO library for realtime connection
+const { createServer } = require("http"); // Create Server from http library
 
 // DB URI
-const dbURI = "mongodb://127.0.0.1:27017/hwms";
+const dbURI = "mongodb://localhost:27017/hwms" 
+// "mongodb://127.0.0.1:27017/hwms"; 
 
-// Create Express server
-
+// Create Express  app and a server
 const app = express();
 const server = createServer(app);
 
@@ -42,13 +42,13 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 
 // Create and configure socket.io server
-const IO = socketIO(server); //creating the IO server with the express server
-IO.engine.use(sessionMiddleware); //handshake IO to the session
+const IO = socketIO(server); //creating the websocket server with the app server
+IO.engine.use(sessionMiddleware); // IO to session handshake
 require("./utils/socket").serverConfig(IO); //pass the IO conn to its controller
 app.use((req, res, next) => {
   req.IO = IO;
   next();
-}); //attach the IO conn to each request
+}); //attach the IO conn to request
 
 // Set EJS as view engine
 app.set("view engine", "ejs");
@@ -74,7 +74,7 @@ app.use(authRoutes);
 app.use(dashboardRoutes);
 
 //connect to DB and set up server
-mongoose.connect(dbURI).then(async (conn) => {
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true }).then((conn) => {
   // Start the server
   server.listen(process.env.PORT || 3000, () => {
     console.log("Server is Live !!");
