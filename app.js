@@ -5,7 +5,8 @@ const corsOptions = require("./utils/corsOptions"); // CORS options
 const session = require("express-session"); // Session management
 const setUser = require("./middleware/setUser"); // Add current user to the request
 const authRoutes = require("./routes/authRoutes"); // Connect authentication routes
-const dashboardRoutes = require("./routes/dashboardRoutes"); // Connect dashboar routes
+const dashboardRoutes = require("./routes/dashboardRoutes"); // Connect dashboarb routes
+const apiRoutes = require("./routes/apiRoutes")
 const path = require("path"); // Path library for building paths 
 const mongoose = require("mongoose"); // Mongoose Library 
 const mongoDBStore = require("connect-mongodb-session")(session); // Storing session in mongodb database
@@ -50,9 +51,6 @@ app.use((req, res, next) => {
   next();
 }); //attach the IO conn to request
 
-// Set EJS as view engine
-app.set("view engine", "ejs");
-
 // Configure Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -72,6 +70,8 @@ app.use(setUser);
 app.use(authRoutes);
 
 app.use(dashboardRoutes);
+
+app.use(apiRoutes)
 
 //connect to DB and set up server
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true }).then((conn) => {
