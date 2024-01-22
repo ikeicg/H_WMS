@@ -2,13 +2,25 @@ const {Schema, model} = require('mongoose')
 
 const caseSchema = new Schema({
     _id: {
-        type: Number,
-        required: true
+        type: Number
     },
     patientName: {
         type: String,
         required: true
     },
+    diagnosis: [
+        {
+            body: String,
+            staff: {type: Schema.Types.ObjectId, ref: "Staff"}
+        }
+    ],
+    vitals: [
+        {
+            body: String,
+            time: Date
+        }
+    ]
+    ,
     treatmentPlan: [
         {
             procedure: {type: Schema.Types.ObjectId, ref: "Procedure"},

@@ -1,12 +1,10 @@
 const {Router} = require('express');
 const isAuth = require('../utils/isAuth')
+const {createCase} = require('../controllers/apiControllers')
 
 const router = Router();
 
-router.get('/createuser', isAuth, (req, res) => {
-    res.send("OMG")
-})
-
+router.post('/api/newcase', createCase)
 
 module.exports = router
 
