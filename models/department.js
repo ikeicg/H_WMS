@@ -30,16 +30,16 @@ departmentSchema.methods.transferCase = async function(caseId, dept) {
     if(caseIndex !== -1){
       await this.constructor.updateOne({name: this.name}, {$pull: {cases: caseId}}).then()
       await this.constructor.updateOne({name: dept}, {$push: {cases: caseId}})
-      return {message: "Successfully transferred case"}
+      return {success: true, message: "Successfully transferred case"}
     }
     else{
-      return {message: "Case doesn't belong in this department"}
+      return { success: false, message: "Case doesn't belong in this department"}
     }
     
   }
   catch(error){
     console.log(error)
-    return {message: "Error encountered while transferring case"}
+    return { success: false, message: "Error encountered while transferring case"}
   }
 
 }

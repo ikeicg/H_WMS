@@ -15,5 +15,17 @@ function createCase(req, res){
 
 }
 
+async function transferCase( req, res) {
+    let {dept1, caseid, dept2 } = req.body;
+    let doc = await Department.findOne({name: dept1})
+    let doc2 = await Department.findOne({name: dept2})
+    if(!doc2){
+        res.status(200).json({success: false, message: "Non-existent department"})
+    }
+    else{
+        res.status(200).json(await doc.transferCase(caseid, dept2))
+    }
+}
 
-module.exports = {createCase}
+
+module.exports = {createCase, transferCase}
