@@ -8,6 +8,10 @@ const caseSchema = new Schema({
         type: String,
         required: true
     },
+    severity: {
+        type: Number,
+        required: true
+    }, 
     diagnosis: [
         {
             body: String,
@@ -19,18 +23,25 @@ const caseSchema = new Schema({
             body: String,
             time: Date
         }
-    ]
-    ,
+    ],
     treatmentPlan: [
         {
             procedure: {type: Schema.Types.ObjectId, ref: "Procedure"},
-            open: {
-                type: Boolean,
-                required: true
-            },
             active: {
                 type: Boolean,
-                required: true
+            },
+            open: {
+                type: Boolean,
+            },
+            scheduled: {
+                status: Boolean,
+                date: Date
+            },
+            objective: {
+                type: String
+            }, 
+            documentation: {
+                type: String
             },
             staff: [{type: Schema.Types.ObjectId, ref: "Staff"}],
         }
@@ -38,11 +49,7 @@ const caseSchema = new Schema({
     open: {
         type: Boolean,
         required: true
-    }, 
-    active: {
-        type: Boolean,
-        required: true
-    },
+    }
 
 }, {timestamps: true})
 
