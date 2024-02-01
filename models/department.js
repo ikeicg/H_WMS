@@ -15,6 +15,10 @@ const departmentSchema = new mongoose.Schema(
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Staff" }],
       required: true,
     },
+    open: {
+      type: Boolean,
+      required: true
+    }
   },
   {
     timestamps: true,
