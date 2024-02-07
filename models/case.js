@@ -39,13 +39,20 @@ const caseSchema = new Schema({
             scheduled: {
                 type: Boolean,
             },
+            queued: {
+                type: Boolean,
+            },
             instances: [ Date ],
             objective: {
                 type: String
             }, 
-            documentation: {
-                type: [String]
-            },
+            documentation: [
+                {
+                    text: String,
+                    date: Date,
+                    staff: {type: Schema.Types.ObjectId, ref: "Staff"}
+                }
+            ],
         }
     ], 
     open: {
