@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose')
+const {Schema, model, Types} = require('mongoose')
 
 const caseSchema = new Schema({
     _id: {
@@ -20,28 +20,24 @@ const caseSchema = new Schema({
     ],
     vitals: [
         {
-            body: String,
+            temperature: String,
+            bloodPressure: String,
             time: Date
         }
     ],
     treatmentPlan: [
         {
             procedure: {type: Schema.Types.ObjectId, ref: "Procedure"},
+            id: Number,
             active: {
                 type: Boolean,
-            },
+            }, // The procedure is being actively handled or not
             open: {
                 type: Boolean,
-            },
-            archived: {
-                type: Boolean
-            },
+            }, // The procedure is still live or closed
             scheduled: {
                 type: Boolean,
-            },
-            queued: {
-                type: Boolean,
-            },
+            }, // The procedure is scheduled for later or not
             instances: [ Date ],
             objective: {
                 type: String
@@ -55,12 +51,62 @@ const caseSchema = new Schema({
             ],
         }
     ], 
+    queued: {
+        type: Boolean,
+    }, 
     open: {
         type: Boolean,
         required: true
     }
 
 }, {timestamps: true})
+
+
+caseSchema.methods.setSeverity = function(val) {
+    let value = val <= 3 ? Number(val) : 3
+    this.severity = value;
+}
+
+caseSchema.methods.addDiagnosis = function(body, staffId){
+    staffId = Types.ObjectId(staffId)
+
+    this.diagnosis.push({
+        body, 
+        staff: staffId
+    })
+}
+
+caseSchema.methods.addVitals = function(temp, pressure){
+    let date = Types.Date(Date.now())
+
+    this.vitals.push({
+        temperature: temp,
+        bloodPressure: pressure,
+        time: date
+    })
+}
+
+caseSchema.methods.addTreatment = function(prod, objective){
+    let procedure = Types.ObjectId(prod)
+    let id = this.treatmentPlan.length + 1
+
+    this.treatmentPlan.push({
+        procedure,
+        id,
+        objective,
+        active: false,
+        open: true,
+        scheduled: false,
+        instances: [],
+        documentation: []
+    })
+},
+
+caseSchema.methods.closeCase = function(){
+    this.open = false;
+}
+
+
 
 // Create AutoIncrement Id for Case schema
 caseSchema.pre('save', async function(next){

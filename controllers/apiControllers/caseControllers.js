@@ -3,12 +3,13 @@ const Department = require('../../models/department')
 
 function createCase(req, res){
 
-    const {patientName, severity } = req.body
+    const {patientName } = req.body
 
     let newCase = new Case({
         patientName,
         open: true,
-        severity
+        queued: false,
+        severity: 1
     });
 
     newCase.save().then(async (data) => {
