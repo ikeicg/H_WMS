@@ -1,18 +1,21 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require("mongoose");
 
-const procedureSchema = new Schema({
+const procedureSchema = new Schema(
+  {
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    deartment: {
-        type: Schema.Types.ObjectId,
-        required: true
+    department: {
+      type: Schema.Types.ObjectId,
+      required: true,
     },
     duration: {
-        type: Number,
-        required: true
-    }
-}, {timestamps: true})
+      type: Number,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
 module.exports = model("Procedure", procedureSchema);

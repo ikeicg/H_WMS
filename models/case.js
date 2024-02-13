@@ -1,133 +1,152 @@
-const {Schema, model, Types} = require('mongoose')
+const { Schema, model, Types } = require("mongoose");
 
-const caseSchema = new Schema({
+const caseSchema = new Schema(
+  {
     _id: {
-        type: Number
+      type: Number,
     },
     patientName: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     severity: {
-        type: Number,
-        required: true
-    }, 
+      type: Number,
+      required: true,
+    },
     diagnosis: [
-        {
-            body: String,
-            staff: {type: Schema.Types.ObjectId, ref: "Staff"}
-        }
+      {
+        body: String,
+        staff: { type: Schema.Types.ObjectId, ref: "Staff" },
+      },
     ],
     vitals: [
-        {
-            temperature: String,
-            bloodPressure: String,
-            time: Date
-        }
+      {
+        temperature: String,
+        bloodPressure: String,
+        time: Date,
+      },
     ],
     treatmentPlan: [
-        {
-            procedure: {type: Schema.Types.ObjectId, ref: "Procedure"},
-            id: Number,
-            active: {
-                type: Boolean,
-            }, // The procedure is being actively handled or not
-            open: {
-                type: Boolean,
-            }, // The procedure is still live or closed
-            scheduled: {
-                type: Boolean,
-            }, // The procedure is scheduled for later or not
-            instances: [ Date ],
-            objective: {
-                type: String
-            }, 
-            documentation: [
-                {
-                    text: String,
-                    date: Date,
-                    staff: {type: Schema.Types.ObjectId, ref: "Staff"}
-                }
-            ],
-        }
-    ], 
+      {
+        procedure: { type: Schema.Types.ObjectId, ref: "Procedure" },
+        id: Number,
+        active: {
+          type: Boolean,
+        }, // The procedure is being actively handled or not
+        open: {
+          type: Boolean,
+        }, // The procedure is still live or closed
+        scheduled: {
+          type: Boolean,
+        }, // The procedure is scheduled for later or not
+        instances: [Date],
+        objective: {
+          type: String,
+        },
+        documentation: [
+          {
+            text: String,
+            date: Date,
+            staff: { type: Schema.Types.ObjectId, ref: "Staff" },
+          },
+        ],
+      },
+    ],
     queued: {
-        type: Boolean,
-    }, 
+      type: Boolean,
+    },
     open: {
-        type: Boolean,
-        required: true
-    }
+      type: Boolean,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-}, {timestamps: true})
+caseSchema.methods.setSeverity = function (val) {
+  let value = val <= 3 ? Number(val) : 3;
+  this.severity = value;
+};
 
+caseSchema.methods.addDiagnosis = function (body, staffId) {
+  staffId = Types.ObjectId(staffId);
 
-caseSchema.methods.setSeverity = function(val) {
-    let value = val <= 3 ? Number(val) : 3
-    this.severity = value;
-}
+  this.diagnosis.push({
+    body,
+    staff: staffId,
+  });
+};
 
-caseSchema.methods.addDiagnosis = function(body, staffId){
-    staffId = Types.ObjectId(staffId)
+caseSchema.methods.addVitals = function (temp, pressure) {
+  let date = Types.Date(Date.now());
 
-    this.diagnosis.push({
-        body, 
-        staff: staffId
-    })
-}
+  this.vitals.push({
+    temperature: temp,
+    bloodPressure: pressure,
+    time: date,
+  });
+};
 
-caseSchema.methods.addVitals = function(temp, pressure){
-    let date = Types.Date(Date.now())
+(caseSchema.methods.addTreatment = function (prod, objective) {
+  let procedure = Types.ObjectId(prod);
+  let id = this.treatmentPlan.length + 1;
 
-    this.vitals.push({
-        temperature: temp,
-        bloodPressure: pressure,
-        time: date
-    })
-}
-
-caseSchema.methods.addTreatment = function(prod, objective){
-    let procedure = Types.ObjectId(prod)
-    let id = this.treatmentPlan.length + 1
-
-    this.treatmentPlan.push({
-        procedure,
-        id,
-        objective,
-        active: false,
-        open: true,
-        scheduled: false,
-        instances: [],
-        documentation: []
-    })
-},
-
-caseSchema.methods.closeCase = function(){
+  this.treatmentPlan.push({
+    procedure,
+    id,
+    objective,
+    active: false,
+    open: true,
+    scheduled: false,
+    instances: [],
+    documentation: [],
+  });
+}),
+  (caseSchema.methods.closeCase = function () {
     this.open = false;
-}
+  });
 
+caseSchema.methods.closeProcedure = function (prodId) {
+  let prodIdx = this.treatmentPlan.findIndex((obj) => obj.id == prodId);
 
+  if (prodIdx != -1) {
+    this.treatmentPlan[prodIdx].open = false;
+  }
+};
+
+caseSchema.methods.scheduleProcedure = function (prodId) {
+  let prodIdx = this.treatmentPlan.findIndex((obj) => obj.id == prodId);
+
+  if (prodIdx != -1) {
+    let value = this.treatmentPlan[prodIdx].scheduled;
+    this.treatmentPlan[prodIdx].scheduled = !value;
+  }
+};
+
+caseSchema.methods.activateProcedure = function (prodId) {
+  let prodIdx = this.treatmentPlan.findIndex((obj) => obj.id == prodId);
+
+  if (prodIdx != -1) {
+    let value = this.treatmentPlan[prodIdx].active;
+    this.treatmentPlan[prodIdx].active = !value;
+  }
+};
 
 // Create AutoIncrement Id for Case schema
-caseSchema.pre('save', async function(next){
+caseSchema.pre("save", async function (next) {
   let doc = this;
-  
-  if(doc.isNew){
 
-    try{
-        docCount = await doc.constructor.countDocuments({})
-        doc._id = docCount+1
-        next()
+  if (doc.isNew) {
+    try {
+      docCount = await doc.constructor.countDocuments({});
+      doc._id = docCount + 1;
+      next();
+    } catch (error) {
+      next(error);
     }
-    catch(error){
-        next(error)
-    }
-    
+  } else {
+    next();
   }
-  else {
-    next()
-  }
-  
-})
- 
-module.exports = model('Case', caseSchema)
+});
+
+module.exports = model("Case", caseSchema);

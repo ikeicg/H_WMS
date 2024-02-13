@@ -6,16 +6,17 @@ const session = require("express-session"); // Session management
 const setUser = require("./middleware/setUser"); // Add current user to the request
 const authRoutes = require("./routes/authRoutes"); // Connect authentication routes
 const dashboardRoutes = require("./routes/dashboardRoutes"); // Connect dashboarb routes
-const apiRoutes = require("./routes/apiRoutes")
-const path = require("path"); // Path library for building paths 
-const mongoose = require("mongoose"); // Mongoose Library 
+const apiRoutes = require("./routes/apiRoutes");
+const path = require("path"); // Path library for building paths
+const mongoose = require("mongoose"); // Mongoose Library
 const mongoDBStore = require("connect-mongodb-session")(session); // Storing session in mongodb database
 const socketIO = require("socket.io"); // SocketIO library for realtime connection
 const { createServer } = require("http"); // Create Server from http library
+const Department = require("./models/department");
 
 // DB URI
-const dbURI = "mongodb://localhost:27017/hwms" 
-// "mongodb://127.0.0.1:27017/hwms"; 
+const dbURI = "mongodb://localhost:27017/hwms";
+// "mongodb://127.0.0.1:27017/hwms";
 
 // Create Express  app and a server
 const app = express();
@@ -71,12 +72,24 @@ app.use(authRoutes);
 
 app.use(dashboardRoutes);
 
-app.use(apiRoutes)
+app.use(apiRoutes);
+
+// Testing Routes
+app.get("/test/latmet/:val", async (req, res) => {
+  let deptName = req.params.val;
+
+  let dpt = await Department.findOne({ name: deptName });
+  let latmet = await dpt.latencyMetric();
+  console.log(latmet);
+  res.send("Ok");
+});
 
 //connect to DB and set up server
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true }).then((conn) => {
-  // Start the server
-  server.listen(process.env.PORT || 3000, () => {
-    console.log("Server is Live !!");
+mongoose
+  .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((conn) => {
+    // Start the server
+    server.listen(process.env.PORT || 3000, () => {
+      console.log("Server is Live !!");
+    });
   });
-});
