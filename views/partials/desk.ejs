@@ -1,1 +1,7 @@
-<h1>Desk</h1>
+<% if (user.role == "FrontDesk") { %>
+    <%- include("../departments/FrontDesk/desk") %>
+<% } else if (user.role == "Triage") { %>
+    <%- include("../departments/Triage/desk") %>
+<% } else if (user.role == "Physician") { %>
+    <%- include("../departments/Physician/desk") %>
+<% } %>

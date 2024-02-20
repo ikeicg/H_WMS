@@ -13,6 +13,11 @@ const mongoDBStore = require("connect-mongodb-session")(session); // Storing ses
 const socketIO = require("socket.io"); // SocketIO library for realtime connection
 const { createServer } = require("http"); // Create Server from http library
 const Department = require("./models/department");
+const Procedure = require("./models/procedure");
+const Case = require("./models/case");
+const Staff = require("./models/staff");
+const Message = require("./models/message");
+const Session = require("./models/session");
 
 // DB URI
 const dbURI = "mongodb://localhost:27017/hwms";
@@ -35,13 +40,17 @@ const sessionStore = new mongoDBStore({
 const sessionMiddleware = session({
   secret: "mysecretkey",
   resave: false,
-  saveUnitialized: false,
+  saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 20,
+    // maxAge: 1000 * 60 * 20,
   },
   store: sessionStore,
+  rolling: true,
 });
-app.use(sessionMiddleware);
+app.use(sessionMiddleware, (req, res, next) => {
+  req.session.lastAccess = Date.now();
+  next();
+});
 
 // Create and configure socket.io server
 const IO = socketIO(server); //creating the websocket server with the app server
@@ -82,6 +91,12 @@ app.get("/test/latmet/:val", async (req, res) => {
   let latmet = await dpt.latencyMetric();
   console.log(latmet);
   res.send("Ok");
+});
+
+let testfunc1 = require("./logic/routingModule");
+app.get("/test/route/", async (req, res) => {
+  let result = await testfunc1(2);
+  res.json({ data: result });
 });
 
 //connect to DB and set up server

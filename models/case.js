@@ -17,13 +17,14 @@ const caseSchema = new Schema(
       {
         body: String,
         staff: { type: Schema.Types.ObjectId, ref: "Staff" },
+        date: Number,
       },
     ],
     vitals: [
       {
         temperature: String,
         bloodPressure: String,
-        time: Date,
+        date: Number,
       },
     ],
     treatmentPlan: [
@@ -39,21 +40,23 @@ const caseSchema = new Schema(
         scheduled: {
           type: Boolean,
         }, // The procedure is scheduled for later or not
-        instances: [Date],
+        instances: [Number],
         objective: {
           type: String,
         },
         documentation: [
           {
             text: String,
-            date: Date,
+            date: Number,
             staff: { type: Schema.Types.ObjectId, ref: "Staff" },
           },
         ],
       },
     ],
+    addedOn: Number,
     queued: {
       type: Boolean,
+      required: true,
     },
     open: {
       type: Boolean,
@@ -66,6 +69,7 @@ const caseSchema = new Schema(
 caseSchema.methods.setSeverity = function (val) {
   let value = val <= 3 ? Number(val) : 3;
   this.severity = value;
+  this.save();
 };
 
 caseSchema.methods.addDiagnosis = function (body, staffId) {
@@ -74,20 +78,23 @@ caseSchema.methods.addDiagnosis = function (body, staffId) {
   this.diagnosis.push({
     body,
     staff: staffId,
+    date: Date.now(),
   });
+
+  this.save();
 };
 
 caseSchema.methods.addVitals = function (temp, pressure) {
-  let date = Types.Date(Date.now());
-
   this.vitals.push({
     temperature: temp,
     bloodPressure: pressure,
-    time: date,
+    time: Date.now(),
   });
+
+  this.save();
 };
 
-(caseSchema.methods.addTreatment = function (prod, objective) {
+caseSchema.methods.addTreatment = function (prod, objective) {
   let procedure = Types.ObjectId(prod);
   let id = this.treatmentPlan.length + 1;
 
@@ -101,16 +108,26 @@ caseSchema.methods.addVitals = function (temp, pressure) {
     instances: [],
     documentation: [],
   });
-}),
-  (caseSchema.methods.closeCase = function () {
-    this.open = false;
-  });
+
+  this.save();
+};
+
+caseSchema.methods.closeCase = function () {
+  this.open = false;
+  this.save();
+};
+
+caseSchema.methods.queueCase = function () {
+  this.queued = true;
+  this.save();
+};
 
 caseSchema.methods.closeProcedure = function (prodId) {
   let prodIdx = this.treatmentPlan.findIndex((obj) => obj.id == prodId);
 
   if (prodIdx != -1) {
     this.treatmentPlan[prodIdx].open = false;
+    this.save();
   }
 };
 
@@ -120,6 +137,7 @@ caseSchema.methods.scheduleProcedure = function (prodId) {
   if (prodIdx != -1) {
     let value = this.treatmentPlan[prodIdx].scheduled;
     this.treatmentPlan[prodIdx].scheduled = !value;
+    this.save();
   }
 };
 
@@ -129,6 +147,7 @@ caseSchema.methods.activateProcedure = function (prodId) {
   if (prodIdx != -1) {
     let value = this.treatmentPlan[prodIdx].active;
     this.treatmentPlan[prodIdx].active = !value;
+    this.save();
   }
 };
 

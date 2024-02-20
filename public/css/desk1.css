@@ -1,0 +1,22 @@
+#fd-desk > div{
+    padding: 10px;  
+    margin-bottom: 10px;
+}
+
+#fd-desk .sect-head{
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+#new-case input{
+    outline: none;  
+    display: block;
+    margin: 5px 0;
+    padding: 10px;
+}
+
+#new-case .input1{
+    width: 50%
+}
