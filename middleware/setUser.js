@@ -3,9 +3,11 @@ module.exports = (req, res, next) => {
   if (!req.session.user) {
     return next();
   } else {
-    Staff.findById(req.session.user.id).then((staffer) => {
-      req.user = staffer;
-      next();
-    });
+    Staff.findById(req.session.user.id, "firstname lastname role").then(
+      (staffer) => {
+        req.user = staffer;
+        next();
+      }
+    );
   }
 };

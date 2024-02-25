@@ -24,22 +24,19 @@ const caseSchema = new Schema(
       {
         temperature: String,
         bloodPressure: String,
-        date: Number,
       },
     ],
     treatmentPlan: [
       {
         procedure: { type: Schema.Types.ObjectId, ref: "Procedure" },
         id: Number,
-        active: {
-          type: Boolean,
-        }, // The procedure is being actively handled or not
         open: {
           type: Boolean,
         }, // The procedure is still live or closed
         scheduled: {
           type: Boolean,
         }, // The procedure is scheduled for later or not
+        scheduledDate: Number,
         instances: [Number],
         objective: {
           type: String,
@@ -54,10 +51,14 @@ const caseSchema = new Schema(
       },
     ],
     addedOn: Number,
+    createdOn: Number,
     queued: {
       type: Boolean,
       required: true,
     },
+    active: {
+      type: Boolean,
+    }, // The case is being actively handled or not
     open: {
       type: Boolean,
       required: true,
@@ -66,14 +67,14 @@ const caseSchema = new Schema(
   { timestamps: true }
 );
 
-caseSchema.methods.setSeverity = function (val) {
+caseSchema.methods.setSeverity = async function (val) {
   let value = val <= 3 ? Number(val) : 3;
   this.severity = value;
-  this.save();
+  await this.save();
 };
 
-caseSchema.methods.addDiagnosis = function (body, staffId) {
-  staffId = Types.ObjectId(staffId);
+caseSchema.methods.addDiagnosis = async function (body, staffId) {
+  staffId = new Types.ObjectId(staffId);
 
   this.diagnosis.push({
     body,
@@ -81,35 +82,34 @@ caseSchema.methods.addDiagnosis = function (body, staffId) {
     date: Date.now(),
   });
 
-  this.save();
+  await this.save();
 };
 
-caseSchema.methods.addVitals = function (temp, pressure) {
+caseSchema.methods.addVitals = async function (temp, pressure) {
   this.vitals.push({
     temperature: temp,
     bloodPressure: pressure,
     time: Date.now(),
   });
 
-  this.save();
+  await this.save();
 };
 
-caseSchema.methods.addTreatment = function (prod, objective) {
-  let procedure = Types.ObjectId(prod);
+caseSchema.methods.addTreatment = async function (prodId, objective) {
+  let procedure = new Types.ObjectId(prodId);
   let id = this.treatmentPlan.length + 1;
 
   this.treatmentPlan.push({
     procedure,
     id,
     objective,
-    active: false,
     open: true,
     scheduled: false,
     instances: [],
     documentation: [],
   });
 
-  this.save();
+  await this.save();
 };
 
 caseSchema.methods.closeCase = function () {
@@ -122,22 +122,37 @@ caseSchema.methods.queueCase = function () {
   this.save();
 };
 
-caseSchema.methods.closeProcedure = function (prodId) {
+caseSchema.methods.closeProcedure = async function (prodId) {
   let prodIdx = this.treatmentPlan.findIndex((obj) => obj.id == prodId);
 
   if (prodIdx != -1) {
-    this.treatmentPlan[prodIdx].open = false;
-    this.save();
+    let value = this.treatmentPlan[prodIdx].open;
+    this.treatmentPlan[prodIdx].open = !value;
+    await this.save();
   }
 };
 
-caseSchema.methods.scheduleProcedure = function (prodId) {
+caseSchema.methods.scheduleProcedure = async function (prodId, date) {
   let prodIdx = this.treatmentPlan.findIndex((obj) => obj.id == prodId);
 
   if (prodIdx != -1) {
     let value = this.treatmentPlan[prodIdx].scheduled;
     this.treatmentPlan[prodIdx].scheduled = !value;
-    this.save();
+    this.treatmentPlan[prodIdx].scheduledDate = date;
+    await this.save();
+  }
+};
+
+caseSchema.methods.documentProcedure = async function (prodId, staffId, text) {
+  let prodIdx = this.treatmentPlan.findIndex((obj) => obj.id == prodId);
+
+  if (prodIdx != -1) {
+    this.treatmentPlan[prodIdx].documentation.push({
+      text,
+      staffId: new Types.ObjectId(staffId),
+      date: Date.now(),
+    });
+    await this.save();
   }
 };
 

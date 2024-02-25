@@ -4,4 +4,6 @@
     <%- include("../departments/Triage/desk") %>
 <% } else if (user.role == "Physician") { %>
     <%- include("../departments/Physician/desk") %>
+<% } else {%>
+    <%- include("../departments/Generic/desk") %>
 <% } %>

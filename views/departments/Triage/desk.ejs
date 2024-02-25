@@ -1,0 +1,34 @@
+<link rel="stylesheet" href="/css/desk2.css">
+
+<div id="tr-desk">
+
+    <div id="tr-cases">
+        <div class="sect-head">
+            <p class="sect-name">Active Cases</p>
+            <div class="next-case pointer">Next</div>
+        </div>
+
+        <div class="case-section" data-dept = <%= user.role %>>
+
+            <% cases.forEach(x => { %>
+                <div class="new-vitals" data-cid=<%= x._id %>  >
+                    <div class="case-info">
+                        <p class="case-no">CASE-NO: #<%= x._id %></p>
+                        <p class="case-name">PATIENT-NAME: <%= x.patientName %></p>
+                    </div>
+                    <div class="vital-signs">
+                        <input type="text" name="temperature" placeholder="Temperature" class="input1 temp" id="" autocomplete="off">
+                        <input type="text" name="bloodPressure" placeholder="Blood Pressure" class="input1 bP" id="" autocomplete="off">
+                        <input type="number" name="severity" placeholder="Severity" class="input1 svrt" id="" autocomplete="off">
+                        <input type="submit" class="add-vital pointer" value="Add">
+                    </div>
+                </div>
+            <% }) %>
+
+
+        </div>
+    </div>
+
+</div>
+
+<script src="/js/desk2.js"></script>

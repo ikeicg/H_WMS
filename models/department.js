@@ -33,22 +33,23 @@ departmentSchema.methods.transferCase = async function (caseId, dept) {
         .updateOne({ name: this.name }, { $pull: { cases: caseId } })
         .then();
 
+      // Update the case's fields
+      let caze = await Case.findOne({ _id: caseId }, "addedOn active queued");
+      caze.addedOn = Date.now();
+      caze.active = false;
+      caze.queued = true;
+      await caze.save();
+
       // add the case to the target department
       await this.constructor.updateOne(
         { name: dept },
         { $push: { cases: caseId } }
       );
 
-      // Update the case's fields
-      let caze = await Case.findOne({ _id: caseId }, "addedOn queued");
-      caze.addedOn = Date.now();
-      caze.queued = true;
-      await caze.save();
-
-      return { success: true, message: "Successfully transferred case" };
+      return { status: true, message: "Successfully transferred case" };
     } else {
       return {
-        success: false,
+        status: false,
         message: "Case doesn't belong in this department",
       };
     }
@@ -68,7 +69,7 @@ departmentSchema.methods.latencyMetric = async function () {
     for (const val of this.cases) {
       let caze = await Case.findOne(
         { _id: val },
-        "treatmentPlan.procedure, treatmentPlan.active"
+        "active treatmentPlan.procedure, treatmentPlan.active"
       ).populate({
         path: "treatmentPlan.procedure",
         populate: {
@@ -79,18 +80,58 @@ departmentSchema.methods.latencyMetric = async function () {
         select: "duration",
       });
 
-      let prods = caze.treatmentPlan.filter(
-        (prod) =>
-          prod.procedure.department.name == this.name && prod.active == false
-      );
+      if (!caze.active) {
+        let prods = caze.treatmentPlan.filter(
+          (prod) => prod.procedure.department.name == this.name
+        );
 
-      prods.forEach((item) => {
-        latMet += Number(item.procedure.duration);
-      });
+        prods.forEach((item) => {
+          latMet += Number(item.procedure.duration);
+        });
+      }
     }
   }
 
   return latMet;
+};
+
+departmentSchema.methods.nextCase = async function () {
+  let cases = [];
+  for (let x of this.cases) {
+    let caze = await Case.findOne({ _id: x }).populate([
+      {
+        path: "treatmentPlan.procedure",
+        select: "department name",
+        populate: {
+          path: "department",
+          select: "name",
+        },
+      },
+      { path: "diagnosis.staff", select: "name" },
+      { path: "treatmentPlan.documentation.staff", select: "name" },
+    ]);
+
+    cases.push(caze);
+  }
+
+  cases = cases.filter((x) => x.active != true);
+
+  if (cases.length > 0) {
+    cases.sort((a, b) => {
+      if (a.severity > b.severity) return -1;
+      if (a.severity < b.severity) return 1;
+
+      return a.addedOn - b.addedOn;
+    });
+
+    let nextCase = cases[0];
+    nextCase.active = true;
+    await nextCase.save();
+
+    return nextCase;
+  } else {
+    return 0;
+  }
 };
 
 departmentSchema.methods.closeDepartment = async function () {};

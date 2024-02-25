@@ -8,6 +8,17 @@
     font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sect-head .next-case{
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 0.9rem; 
 }
 
 #new-case input{
@@ -20,3 +31,34 @@
 #new-case .input1{
     width: 50%
 }
+
+.case-section .case-div{
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 12px gray;
+    width: 80%;
+    margin: 20px auto;
+    font-weight: bold;
+}
+
+#fd-cases .case-info{
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+}
+
+#fd-cases .case-actions{
+    display: flex;
+}
+
+#fd-cases .case-action{
+    margin: 5px 15px;
+    background-color: white;
+    color: green;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+

@@ -6,13 +6,30 @@
         <p class="sect-head">Create a Case</p>
         <form id="new-case" action="">
             <input type="text" name="pName" class="pName input1" autocomplete="off" placeholder="Patient Name" required>
-            <input type="number" name="svty" class="svty input1" autocomplete="off" min="1" max="3" required placeholder="severity">
             <input type="submit" value="Create">
         </form>
     </div>
 
     <div id="fd-cases">
-        <p class="sect-head">Active Cases</p>
+        <div class="sect-head">
+            <p class="sect-name">Active Cases</p>
+            <div class="next-case pointer">Next</div>
+        </div>
+
+        <div class="case-section" data-dept=<%= user.role %>>
+            <% cases.forEach(x => { %>
+                <div class="case-div" data-cid=<%= x._id %> >
+                    <div class="case-info">
+                        <p class="case-no">CASE-NO: #<%= x._id %></p>
+                        <p class="case-name">PATIENT-NAME: <%= x.patientName %></p>
+                    </div>
+                    <div class="case-actions">
+                        <div class="case-action rev-case">Physician Review</div>
+                        <div class="case-action recall">Recall</div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
     </div>
 
 </div>

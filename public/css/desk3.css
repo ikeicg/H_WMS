@@ -1,0 +1,98 @@
+#phy-desk{
+    padding: 10px;
+}
+
+.sect-head{
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.next-case{
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 0.9rem;  
+}
+
+.case-section{
+    width: 80%;
+    margin: auto;
+}
+
+.case-div{
+    background-color: var(--primary-color);
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    margin: 20px
+}
+
+.case-div > div{
+    padding: 5px;
+    margin: 5px;
+}
+
+.case-info{
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sub-sect{
+    font-weight: 600;
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+input, button, textarea{
+    outline: none;  
+    display: block;
+    margin: 5px 0;
+    padding: 10px;
+}
+
+textarea{
+    min-width: 100%;
+    max-width: 100%;
+}
+
+.input1{
+    width: 70%
+}
+
+.svr-vital{
+    display: flex;
+}
+
+.svr-vital > div{
+    width: 50%
+}
+
+.attr-title{
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.pad-l10{
+    padding: 5px 10px;
+}
+
+.tplan-item, .diagnosis-item{
+    background-color: var(--tertiary-color);
+    margin: 5px auto;
+}
+
+.add-prodname{
+    font-weight: bold;
+}
+
+.case-actions button{
+    margin: 0 auto;
+}

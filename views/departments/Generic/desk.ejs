@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="/css/desk4.css">
+
+<div id="gdpt-desk">
+    
+    <div class="sect-head">
+        <p class="sect-name">Active Cases</p>
+        <div class="next-case pointer">Next</div>
+    </div>
+
+    <div class="case-section" data-dept= <%= user.role %> data-staff = <%= user._id %> >
+
+        <% cases.forEach(x => {  %>
+            
+            <div class="case-div" data-cid= <%= x._id %>>
+
+                <div class="case-info">
+                    <p class="case-no">CASE-NO: #<%= x._id %></p>
+                    <p class="case-name">PATIENT-NAME: <%= x.patientName %></p>
+                </div>
+
+                <% x.treatmentPlan.forEach(y => { %>
+
+                    <div class="prod-item"  data-pid = <%= y.id %>>
+                        <div class="prod-name">
+                            <span class="attr-title">Procedure:</span>  <%= y.procedure.name %>
+                        </div>
+                        <div class="prod-obj">
+                            <span class="attr-title">Objective:</span> <%= y.objective %>
+                        </div>
+                        <div class="add-doc">
+                            <textarea name="" class="doc-case" id="" placeholder="Documentation..."></textarea>
+                        </div>
+                        <div class="case-actions">
+                            <input type="date"  class="sched-date" id="">
+                            <button class="sched-case pointer"><%= y.scheduled ? "Unschedule Case" : "Schedule Case"  %></button>
+                            <button class="close-case pointer"><%= y.open ? "Close Case" : "Open Case"  %></button>
+                        </div>
+                    </div>
+
+                <%})%>
+
+                <div class="case-actions2">
+                    <button class="proceed-case pointer">Proceed</button>
+                </div>
+
+            </div>
+
+        <% }) %>    
+
+    </div>
+    
+</div>
+
+<script src="/js/desk4.js"></script>

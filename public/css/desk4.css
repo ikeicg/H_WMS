@@ -1,0 +1,80 @@
+#gdpt-desk{
+    padding: 10px
+}
+
+
+.sect-head{
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.next-case{
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 0.9rem;  
+}
+
+.case-section{
+    width: 80%;
+    margin: auto;
+}
+
+.case-div{
+    background-color: var(--primary-color);
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    margin: 15px 0
+}
+
+.prod-item > div{
+    padding: 5px;
+    margin: 5px;
+}
+
+.case-info{
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.prod-obj{
+    background-color: var(--tertiary-color);
+}
+
+.attr-title{
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+textarea, button, input{
+    outline: none;  
+    display: block;
+    margin: 5px 0;
+    padding: 10px;
+}
+
+textarea{
+    min-width: 100%;
+    max-width: 100%
+}
+
+.case-actions{
+    display: flex;
+}
+
+.case-actions > * {
+    margin: 0 5px
+}
+
+.case-actions2 button{
+    margin: 0 auto;
+}

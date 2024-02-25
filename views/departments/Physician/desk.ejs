@@ -1,0 +1,101 @@
+<link rel="stylesheet" href="/css/desk3.css">
+
+<div id="phy-desk">
+
+    <div class="sect-head">
+        <p class="sect-name">Active Cases</p>
+        <div class="next-case pointer">Next</div>
+    </div>
+
+    <div class="case-section" data-dept = <%= user.role %> data-staff = <%=user._id%>>
+
+        <% cases.forEach(x => { %>
+            <div class="case-div" data-cid=<%= x._id %> >
+                <div class="case-info">
+                    <p class="case-no">CASE-NO: #<%= x._id %></p>
+                    <p class="case-name">PATIENT-NAME: <%= x.patientName %></p>
+                </div>
+
+                <div class="svr-vital">
+                    <div class="severity-info">
+                        <p class="sub-sect">SEVERITY</p>
+                        <input type="number" name="" max=3 min=1 class="svr-input input1" id="" value="<%= x.severity %>">
+                        <button class="submit-svr pointer">Change</button>
+                    </div>
+        
+                    <div class="vitals-info">
+                        <p class="sub-sect">VITAL SIGNS</p>
+                        <p class="vital-temp">
+                            <span class="attr-title">Temperature:</span>
+                            <% if (x.vitals && x.vitals.length) { %>
+                                <%= x.vitals.slice(-1)[0].temperature %> *C
+                            <% } else { %>
+                                0 *C
+                            <% } %>
+                        </p>
+                        
+                        <p class="vital-pres">
+                            <span class="attr-title">Blood Pressure:</span>
+                            <% if (x.vitals && x.vitals.length) { %>
+                                <%= x.vitals.slice(-1)[0].bloodPressure %> mmHg
+                            <% } else { %>
+                                0 mmHg
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="diagnosis-info">
+                    <p class="sub-sect">DIAGNOSIS</p>
+                    <div class="diag-items">
+                        <% x.diagnosis.forEach( y => { %>
+                            <p class="diagnosis-item pad-l10"> <%= y.body %> --- <%= new Date(y.date).toLocaleDateString() %></p>
+                        <% }) %>
+                    </div>
+                    <textarea name="" id="" class="add-diagnosis input1" placeholder="Add Diagnosis..."></textarea>
+                    <button class="submit-diag pointer">Add</button>
+                </div>
+
+                <div class="tplan-info">
+                    <p class="sub-sect">TREATMENT PLAN</p>
+                    
+                    <div class="tplan-items">
+
+                        <% x.treatmentPlan.forEach(y => { %>
+                            <div class="tplan-item">
+                                <p class="prod-name pad-l10"><span class="attr-title">Procedure:</span> <%= y.procedure.name %></p>
+                                <p class="prod-obj pad-l10"><span class="attr-title">Objective:</span> <%= y.objective %></p>
+                                <p class="prod-open pad-l10"><span class="attr-title">Open:</span> <%= y.open %></p>
+                                <p class="prod-sched pad-l10"><span class="attr-title">Scheduled:</span> <%= y.scheduled %></p>
+                                <p class="prod-doc pad-l10"><span class="attr-title">Documentation:</span> 
+                                    <% if (y.documentation && y.documentation.length) { %>
+                                        <%= y.documentation.slice(-1)[0].text %>
+                                    <% } else { %>
+                                        <%= "" %>
+                                    <% } %>
+                                </p>
+                            </div>
+                        <% }) %>
+
+                    </div>
+                    
+                    <div class="add-tplan">
+                        <input type="text" name="" id="" class="input-prod input1" placeholder="Enter Procedure..">
+                        <p class="add-prodname pad-l10" data-pid=""></p>
+                        <textarea name="" class="add-prodobj input1" placeholder="Add Objective ..."></textarea>
+                        <button class="submit-tplan pointer">Add</button>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <button class="proceed-case pointer">Proceed</button>
+                </div>
+            </div>
+        <% }) %>
+
+
+    </div>
+
+</div>
+
+
+<script src="/js/desk3.js"></script>

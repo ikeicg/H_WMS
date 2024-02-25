@@ -95,7 +95,7 @@ app.get("/test/latmet/:val", async (req, res) => {
 
 let testfunc1 = require("./logic/routingModule");
 app.get("/test/route/", async (req, res) => {
-  let result = await testfunc1(2);
+  let result = await testfunc1(1);
   res.json({ data: result });
 });
 

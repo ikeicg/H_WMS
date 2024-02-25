@@ -22,6 +22,7 @@ header{
     justify-content: space-between;
     align-items: center;
     padding: 8px;
+    height: 10%;
 }
 
 header div{
@@ -45,6 +46,7 @@ header #logout_btn{
 #body-content{
     display: flex;  
     flex-grow: 1;
+    height: 90%;
 }
 
 #sidebar{
@@ -73,6 +75,13 @@ header #logout_btn{
     background-color: whitesmoke;
     height: 100%;
     width: 85%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#main-content::-webkit-scrollbar{
+    display: none;
 }
 
 #main-content #dpt_div{
@@ -90,7 +99,7 @@ header #logout_btn{
     font-weight: 600;
 }
 
-#main-content #start_shift{
+#main-content #open-dept{
     background-color: var(--secondary-color);
     color: white;
     font-size: 0.8rem;
@@ -101,4 +110,8 @@ header #logout_btn{
 
 .pointer{
     cursor: pointer;
+    box-shadow: 0 0 8px gray;
 }
+
+
+
