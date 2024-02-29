@@ -134,8 +134,26 @@ departmentSchema.methods.nextCase = async function () {
   }
 };
 
-departmentSchema.methods.closeDepartment = async function () {};
+departmentSchema.methods.closeDepartment = async function () {
+  try {
+    this.open = false;
+    await this.save();
+    return { status: true, message: "Successful" };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: "Failure" };
+  }
+};
 
-departmentSchema.methods.openDepartment = async function () {};
+departmentSchema.methods.openDepartment = async function () {
+  try {
+    this.open = true;
+    await this.save();
+    return { status: true, message: "Sucessful" };
+  } catch (error) {
+    console.log(error);
+    return { status: false, message: "Failure" };
+  }
+};
 
 module.exports = mongoose.model("Department", departmentSchema);

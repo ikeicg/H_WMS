@@ -1,1 +1,44 @@
-<h1>Chat</h1>
+<link rel="stylesheet" href="/css/chat.css">
+
+<div id="chat-div" data-dept=<%= user.role %>>
+    <div class="chatbox">
+
+        <% messages.forEach(x => { %>
+            
+            <% if(x.recipient == user.role) { %>
+                <div class="receipt-msg">
+                    <div class="msg-sender">FROM: <%=x.sender %> </div>
+                    <div class="msg-body"> <%=x.text %> --- <%=new Date(x.time).getHours() %>:<%=new Date(x.time).getMinutes() %> <%=new Date(x.time).getHours() >= 12 ? 'pm' : 'am' %> </div>
+                </div>
+            <% } else { %>
+                <div class="sent-msg">
+                    <div class="msg-target">TO: <%=x.recipient %> </div>
+                    <div class="msg-body"> <%=x.text %> --- <%=new Date(x.time).getHours() %>:<%=new Date(x.time).getMinutes() %> <%=new Date(x.time).getHours() >= 12 ? 'pm' : 'am' %> </div>
+                </div>
+            <%}%>
+
+        <% }) %>    
+
+    
+        
+    </div>
+    <div class="send-msg">
+
+        <textarea name="" id="" cols="30" rows="10" class="msg-text" placeholder="Send a Message..."></textarea>
+        <div class="msg-config">
+            <select name="" id="" class="choose-dept">
+                <option value="">Choose Department</option>
+                <% departments.forEach(x => {  %>
+                    <% if(x.name != user.role){ %>
+               
+                    <option value = <%= x.name %> > <%= x.name %></option>
+
+                <% }}) %>
+            
+            </select>
+            <button class="send">Send</button>
+        </div>
+    </div>
+</div>
+
+<script src="/js/chat.js"></script>

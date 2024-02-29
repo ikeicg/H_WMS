@@ -33,6 +33,12 @@ async function transferCase(req, res) {
   //Find the first department
   let doc = await Department.findOne({ name: dept1 });
 
+  // grab case using caseId, set active and queued to false
+  let caze = await Case.findOne({ _id: caseId });
+  caze.active = false;
+  caze.queued = false;
+  await caze.save();
+
   // If the second dept is 0, that means route the case
   if (dept2 == 0) {
     dept2 = await RouteCase(caseId);
@@ -40,14 +46,12 @@ async function transferCase(req, res) {
   let doc2 = await Department.findOne({ name: dept2 });
 
   if (!doc2 || !doc) {
-    res.status(200).json({ status: false, message: "Non-existent department" });
-  } else {
-    // grab case using caseId, set active and queued to false
-    let caze = await Case.findOne({ _id: caseId });
     caze.active = false;
-    caze.queued = false;
+    caze.queued = true;
     await caze.save();
 
+    res.status(200).json({ status: false, message: "Non-existent department" });
+  } else {
     res.status(200).json(await doc.transferCase(caseId, dept2));
   }
 }

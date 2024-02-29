@@ -89,6 +89,7 @@ header #logout_btn{
     justify-content: space-around;
     align-items: center;
     padding: 6px;
+    height: 6%
 }
 
 #main-content #dpt_div *{

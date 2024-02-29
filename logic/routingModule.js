@@ -20,16 +20,18 @@ module.exports = async (caseId) => {
   });
 
   if (caze) {
+    // If the case is active, do nothing
+    if (caze.active || caze.queued) return "";
+
     let departments = {};
     let numOfLiveProcds = 0;
 
     caze.treatmentPlan.forEach((x) => {
-      // If any procedure is active, do nothing
-      if (x.active) return "";
-
       // Set scheduled state for procedures from closed departments to true
       if (closedDpts.includes(x.procedure.department.name)) {
         x.scheduled = true;
+        x.scheduledDate =
+          Date.now() + 1000 * 60 * 60 * (24 - new Date().getHours());
       }
 
       // Find procedures that are still open and not scheduled

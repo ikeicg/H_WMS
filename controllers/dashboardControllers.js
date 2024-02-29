@@ -1,9 +1,12 @@
 const Department = require("../models/department");
+const Message = require("../models/message");
 
 const getDashboard = async (req, res) => {
   const path = req.query.path || null;
 
   let dptName = req.user.role;
+
+  let departments = await Department.find({}, "name");
 
   let department = await Department.findOne(
     { name: dptName },
@@ -24,6 +27,11 @@ const getDashboard = async (req, res) => {
     ],
   });
 
+  let messages = await Message.find({
+    $or: [{ sender: dptName }, { recipient: dptName }],
+    time: { $gte: Date.now() - 24 * 60 * 60 * 1000 }, // Messages sent within the last 24 hours
+  });
+
   let activecases = department.cases.filter((x) => {
     return x.active == true;
   });
@@ -34,7 +42,14 @@ const getDashboard = async (req, res) => {
     });
   });
 
-  res.render("dashboard", { path: path, user: req.user, cases: activecases });
+  res.render("dashboard", {
+    path: path,
+    user: req.user,
+    cases: activecases,
+    deptStatus: department.open,
+    departments,
+    messages,
+  });
 };
 
 module.exports = {

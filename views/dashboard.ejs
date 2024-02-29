@@ -7,6 +7,7 @@
     <title>HWMS-Dashboard</title>
     <link rel="stylesheet" href="/css/root_var.css">
     <link rel="stylesheet" href="/css/dashboard.css" />
+    <script src="/socket.io/socket.io.js"></script>
   </head>
 
   <body>
@@ -41,7 +42,7 @@
 
       <div id="main-content">
 
-        <div id="dpt_div">
+        <div id="dpt_div" data-dept=<%= user.role %>>
           <div class="dpt_details">
             <span class="dpt_name">
               <%= user.role %> Department
@@ -49,9 +50,12 @@
             (<%= user.lastname %> 
             <%= user.firstname %>)
           </div>
-          <div id="open-dept">
-            Closed
-          </div>
+
+          <% if(!["FrontDesk", "Triage", "Physician"].includes(user.role)) {%>
+            <div id="open-dept" class="pointer">
+              <%= deptStatus ? "Open" : "Closed" %>
+            </div>
+          <% } %>
         </div>
 
         <% if (path === 'desk' || path === null) { %>
@@ -78,9 +82,5 @@
     </div>
 
     <script src="/js/dashboard.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const socket = io();
-    </script>
   </body>
 </html>

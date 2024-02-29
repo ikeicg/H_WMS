@@ -1,0 +1,64 @@
+#chat-div{
+    padding: 0 5px 10px 5px;
+    height: 94%;
+    overflow: hidden ;
+}
+
+.chatbox{
+    /* background-color: black; */
+    padding: 5px;
+    height: 85%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.chatbox::-webkit-scrollbar{
+    display: none;
+}
+
+.send-msg{
+    background-color: green;
+    height: 15%;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.send-msg textarea{
+    width: 80%;
+    resize: none;
+}
+
+select, button, textarea {
+    outline: none;  
+    display: block;
+    margin: 5px 0;
+    padding: 5px;
+}
+
+.chatbox > div {
+    margin: 15px 0;
+    padding: 5px;
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 80%;
+    color: white;
+}
+
+.chatbox .receipt-msg{
+    margin-right: auto;
+    background-color: var(--tertiary-color);
+}
+
+.chatbox .sent-msg{
+    margin-left: auto;
+    background-color: var(--secondary-color);
+}
+
+.chatbox .msg-sender,
+.chatbox .msg-target{
+    font-weight: 600;
+    margin: 2px 0;
+}
+

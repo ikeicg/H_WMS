@@ -11,7 +11,10 @@ const {
   closeCase,
   recallCase,
 } = require("../controllers/apiControllers/caseControllers");
-const { nextCase } = require("../controllers/apiControllers/deptControllers");
+const {
+  nextCase,
+  closeDept,
+} = require("../controllers/apiControllers/deptControllers");
 const Department = require("../models/department");
 const Procedure = require("../models/procedure");
 const verifyRoles = require("../middleware/verifyRoles");
@@ -45,6 +48,7 @@ router.post("/api/case/recall", verifyRoles("*"), recallCase);
 // Department Endpoints
 
 router.post("/api/dept/nextcase", verifyRoles("*"), nextCase);
+router.post("/api/dept/close", verifyRoles("*"), closeDept);
 
 // Procedure Endpoints
 
