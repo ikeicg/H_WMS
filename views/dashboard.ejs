@@ -28,15 +28,12 @@
           Chat
         </a>
 
-        <% if (user.role == 'Admin') { %>
+        <%  if (user.role != "Admin") { %>
 
-          <a class=" <%= path === 'addP' ? 'active' : '' %> sidebar_itm" href="/dashboard?path=addP">
-            Add Procedure
+          <a class=" <%= path === 'revCase' ? 'active' : '' %> sidebar_itm" href="/dashboard?path=revCase">
+            Review
           </a>
 
-          <a class=" <%= path === 'addS' ? 'active' : '' %>  sidebar_itm" href="/dashboard?path=addS">
-            Add Staff
-          </a>
         <% } %>
       </div>
 
@@ -51,7 +48,7 @@
             <%= user.firstname %>)
           </div>
 
-          <% if(!["FrontDesk", "Triage", "Physician"].includes(user.role)) {%>
+          <% if(!["FrontDesk", "Triage", "Physician", 'Admin'].includes(user.role)) {%>
             <div id="open-dept" class="pointer">
               <%= deptStatus ? "Open" : "Closed" %>
             </div>
@@ -65,14 +62,9 @@
         <% } else if (path == 'chat') { %>
 
           <%- include('partials/chat') %>
+        <%  } else if (path == "revCase" && user.role != "Admin") { %>
 
-        <% } else if (path == 'addP' && user.role == 'Admin') { %>
-
-          <%- include('partials/addProcedure') %>
-        
-        <% } else if (path == 'addS' && user.role == 'Admin') { %>
-
-          <%- include('partials/addStaff') %>
+          <%- include('partials/revCase') %>
 
         <% } else { %>
           <h1>Invalid / Protected Path </h1>

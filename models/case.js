@@ -45,12 +45,14 @@ const caseSchema = new Schema(
           {
             text: String,
             date: Number,
-            staff: { type: Schema.Types.ObjectId, ref: "Staff" },
           },
         ],
       },
     ],
-    addedOn: Number,
+    addedOn: {
+      type: Number,
+      default: 0,
+    },
     createdOn: Number,
     queued: {
       type: Boolean,
@@ -143,13 +145,12 @@ caseSchema.methods.scheduleProcedure = async function (prodId, date) {
   }
 };
 
-caseSchema.methods.documentProcedure = async function (prodId, staffId, text) {
+caseSchema.methods.documentProcedure = async function (prodId, text) {
   let prodIdx = this.treatmentPlan.findIndex((obj) => obj.id == prodId);
 
   if (prodIdx != -1) {
     this.treatmentPlan[prodIdx].documentation.push({
       text,
-      staffId: new Types.ObjectId(staffId),
       date: Date.now(),
     });
     await this.save();

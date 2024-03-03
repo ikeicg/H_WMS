@@ -1,12 +1,15 @@
 const Department = require("../models/department");
 const Message = require("../models/message");
+const Case = require("../models/case");
 
 const getDashboard = async (req, res) => {
   const path = req.query.path || null;
 
+  const caseId = req.query.cid || null;
+
   let dptName = req.user.role;
 
-  let departments = await Department.find({}, "name");
+  let departments = await Department.find({});
 
   let department = await Department.findOne(
     { name: dptName },
@@ -23,7 +26,6 @@ const getDashboard = async (req, res) => {
         },
       },
       { path: "diagnosis.staff", select: "name" },
-      { path: "treatmentPlan.documentation.staff", select: "name" },
     ],
   });
 
@@ -42,6 +44,22 @@ const getDashboard = async (req, res) => {
     });
   });
 
+  let caze = "";
+
+  if (caseId) {
+    let res1 = await Case.findOne({ _id: caseId }).populate([
+      {
+        path: "treatmentPlan.procedure",
+        select: "department name",
+        populate: { path: "department", select: "name" },
+      },
+    ]);
+
+    if (res1) {
+      caze = res1;
+    }
+  }
+
   res.render("dashboard", {
     path: path,
     user: req.user,
@@ -49,6 +67,7 @@ const getDashboard = async (req, res) => {
     deptStatus: department.open,
     departments,
     messages,
+    caze,
   });
 };
 

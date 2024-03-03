@@ -37,7 +37,9 @@ function addMessage(msg) {
         <div class="${msgType}-msg">
             <div class="msg-sender">${senderOrTarget}</div>
             <div class="msg-body">
-                ${msg.text} --- ${hours}:${minutes} ${period}
+                ${msg.text} --- ${hours}:${minutes} ${period} (${new Date(
+    msg.time
+  ).toDateString()})
             </div>
         </div>
     `;

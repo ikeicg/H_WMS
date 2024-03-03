@@ -8,12 +8,12 @@
             <% if(x.recipient == user.role) { %>
                 <div class="receipt-msg">
                     <div class="msg-sender">FROM: <%=x.sender %> </div>
-                    <div class="msg-body"> <%=x.text %> --- <%=new Date(x.time).getHours() %>:<%=new Date(x.time).getMinutes() %> <%=new Date(x.time).getHours() >= 12 ? 'pm' : 'am' %> </div>
+                    <div class="msg-body"> <%=x.text %> --- <%=new Date(x.time).getHours() %>:<%=new Date(x.time).getMinutes() %> <%=new Date(x.time).getHours() >= 12 ? 'pm' : 'am' %> (<%= new Date(x.time).toDateString() %>) </div>
                 </div>
             <% } else { %>
                 <div class="sent-msg">
                     <div class="msg-target">TO: <%=x.recipient %> </div>
-                    <div class="msg-body"> <%=x.text %> --- <%=new Date(x.time).getHours() %>:<%=new Date(x.time).getMinutes() %> <%=new Date(x.time).getHours() >= 12 ? 'pm' : 'am' %> </div>
+                    <div class="msg-body"> <%=x.text %> --- <%=new Date(x.time).getHours() %>:<%=new Date(x.time).getMinutes() %> <%=new Date(x.time).getHours() >= 12 ? 'pm' : 'am' %> (<%= new Date(x.time).toDateString() %>) </div>
                 </div>
             <%}%>
 

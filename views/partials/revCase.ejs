@@ -1,0 +1,175 @@
+<link rel="stylesheet" href="/css/desk5.css">
+
+<div id="rev-case">
+
+    <div class="sect-head">
+        Review a Case
+    </div>
+
+    <div class="lookup-form">
+        <input type="number" min="1" name="" id="" class="input-cid" placeholder="Enter Case Id">
+        <button class="search-cid">Search</button>
+    </div>
+
+    <div class="case-section" data-dept = <%= user.role %> data-staff = <%=user._id%>>
+
+        <% if(caze){ %>
+            <div class="case-div" data-cid=<%= caze._id %> >
+                <div class="case-info">
+                    <p class="case-no">CASE-NO: #<%= caze._id %></p>
+                    <p class="case-name">PATIENT-NAME: <%= caze.patientName %></p>
+                </div>
+
+                <% 
+                    let curdpts = departments.filter( x => {
+                        return x.cases.includes(caze._id)
+                    })
+                    let loc = ''
+                    if(curdpts.length >= 1){
+                        loc = curdpts[0].name
+                    }
+                 %>
+
+                <div class="curLoc">
+                    <span class="attr-title"> STATUS:</span>
+                    <p>This case is <%= caze.open ? "OPEN" : "CLOSED" %> ( <%= loc ? `${loc} Department` : "Nil" %> )</p>
+                </div>
+    
+                <div class="svr-vital">
+                    <div class="severity-info">
+                        <p class="sub-sect">SEVERITY</p>
+
+                        <% if(['Physician', 'Triage'].includes(user.role)){ %>
+                            <input type="number" name="" max=3 min=1 class="svr-input input1" id="" value="<%= caze.severity %>">
+                            <button class="submit-svr pointer">Change</button>
+                        <% } else { %>
+                            <p><span class="attr-title">Severity Level:</span> <%= caze.severity %></p>
+                        <% } %>
+                        
+                    </div>
+        
+                    <div class="vitals-info">
+
+                        <% if (["Triage", "Physician"].includes(user.role)){ %>
+                            <p class="sub-sect">VITAL SIGNS</p>
+                            <p class="vital-temp">
+                                <span class="attr-title">Temperature:</span>
+                                <input type="text" class="temp-input" name="" id="" value = <%= caze.vitals && caze.vitals.length ? caze.vitals.slice(-1)[0].temperature : 0 %>>
+                            </p>
+                            
+                            <p class="vital-pres">
+                                <span class="attr-title">Blood Pressure:</span>
+                                <input type="text" class="bp-input" id="" value = <%= caze.vitals && caze.vitals.length ? caze.vitals.slice(-1)[0].bloodPressure : 0 %>>
+                            </p>
+
+                            <button class="set-vital">Change</button>
+                        <% } else { %>
+                            <p class="sub-sect">VITAL SIGNS</p>
+                            <p class="vital-temp">
+                                <span class="attr-title">Temperature:</span>
+                                <% if (caze.vitals && caze.vitals.length) { %>
+                                    <%= caze.vitals.slice(-1)[0].temperature %> *C
+                                <% } else { %>
+                                    0 *C
+                                <% } %>
+                            </p>
+                            
+                            <p class="vital-pres">
+                                <span class="attr-title">Blood Pressure:</span>
+                                <% if (caze.vitals && caze.vitals.length) { %>
+                                    <%= caze.vitals.slice(-1)[0].bloodPressure %> mmHg
+                                <% } else { %>
+                                    0 mmHg
+                                <% } %>
+                            </p>
+                       <% }%>
+
+
+                    </div>
+                </div>
+                
+                <% if(user.role == "Physician") { %>
+                    <div class="diagnosis-info">
+                        <p class="sub-sect">DIAGNOSIS</p>
+                        <div class="diag-items">
+                            <% caze.diagnosis.forEach( y => { %>
+                                <p class="diagnosis-item pad-l10"> <%= y.body %> --- <%= new Date(y.date).toLocaleDateString() %></p>
+                            <% }) %>
+                        </div>
+                        <textarea name="" id="" class="add-diagnosis input1" placeholder="Add Diagnosis..."></textarea>
+                        <button class="submit-diag pointer">Add</button>
+                    </div>
+                <% } %>
+                
+    
+                <div class="tplan-info">
+                    <p class="sub-sect">TREATMENT PLAN</p>
+                    
+                    <div class="tplan-items">
+    
+                        <% caze.treatmentPlan.forEach(y => { %>
+                            <% if (user.role == y.procedure.department.name || ["Physician", "FrontDesk"].includes(user.role)){ %>
+                                <div class="tplan-item" data-pid=<%= y.id %>>
+                                    <p class="prod-name pad-l10"><span class="attr-title">Department:</span> <%= y.procedure.department.name %></p>
+                                    <p class="prod-name pad-l10"><span class="attr-title">Procedure:</span> <%= y.procedure.name %></p>
+                                    <p class="prod-open pad-l10"><span class="attr-title">Open:</span> <%= y.open %></p>
+                                    <p class="prod-sched pad-l10"><span class="attr-title">Scheduled:</span> <%= y.scheduled %> <%= y.scheduled ? ` --- ${new Date(y.scheduledDate).toLocaleDateString()}` : "" %></p>
+                                    <% if(user.role == y.procedure.department.name || ["Physician"].includes(user.role)){ %>
+                                        <p class="prod-obj pad-l10"><span class="attr-title">Objective:</span> <%= y.objective %></p>
+                                        <p class="prod-doc pad-l10"><span class="attr-title">Documentation:</span> 
+                                            <% if (y.documentation && y.documentation.length) { %>
+                                                <%= y.documentation.slice(-1)[0].text %>
+                                            <% } else { %>
+                                                <%= "" %>
+                                            <% } %>
+                                        </p>
+                                    <% } %>
+
+                                    <% if (user.role == y.procedure.department.name) { %>
+                                        <div class="add-doc">
+                                            <textarea name="" id="" class="input1 pad-l10" placeholder="Add Documentation..."></textarea>
+                                            <button class="prod-close">Add</button>
+                                        </div>
+                                        
+                                    <% } %>
+                                    <% if (user.role == "FrontDesk" && y.scheduled) { %>
+                                        <div class="prod-actions">
+                                            <button class="prod-sched">Activate</button>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                            
+                        <% }) %>
+    
+                    </div>
+                    <% if (user.role == "Physician") { %>
+                        <div class="add-tplan">
+                            <input type="text" name="" id="" class="input-prod input1" placeholder="Enter Procedure..">
+                            <p class="add-prodname pad-l10" data-pid=""></p>
+                            <textarea name="" class="add-prodobj input1" placeholder="Add Objective ..."></textarea>
+                            <button class="submit-tplan pointer">Add</button>
+                        </div>
+                    <% } %>
+                    
+                </div>
+
+
+                <div class="case-actions">
+                    <button class="close-case pointer">Close</button>
+                    <% if (user.role == "Physician" && caze.open) { %>
+                        <button class="discharge">Discharge Patient</button>
+                    <% } %> 
+                    <% if (user.role == "FrontDesk" && !caze.queued && !caze.active && caze.open  ) { %>
+                        <button class="re-act">Route Case</button>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+
+    </div>
+
+    
+</div>
+
+<script src="/js/desk5.js"></script>

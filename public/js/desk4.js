@@ -24,7 +24,6 @@ document
       response = await response.json();
 
       if (response.status) {
-        console.log(response);
         window.location.reload();
       }
     });
@@ -39,7 +38,6 @@ document
         .closest(".prod-item")
         .querySelector(".doc-case").value;
       let prodId = e.target.closest(".prod-item").dataset.pid;
-      let staffId = e.target.closest(".case-section").dataset.staff;
       let caseId = e.target.closest(".case-div").dataset.cid;
 
       let response = await fetch("/api/case/close", {
@@ -51,14 +49,12 @@ document
           text: text ? text : "",
           prodId,
           caseId,
-          staffId,
         }),
       });
 
       response = await response.json();
 
       if (response.status) {
-        console.log(response);
         window.location.reload();
       }
     });

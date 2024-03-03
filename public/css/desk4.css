@@ -1,4 +1,4 @@
-#gdpt-desk{
+#gdpt-desk, #adm-div{
     padding: 10px
 }
 
@@ -77,4 +77,32 @@ textarea{
 
 .case-actions2 button{
     margin: 0 auto;
+}
+
+#adm-div .dept-section{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    justify-items: center;
+}
+
+
+#adm-div .dept {
+    padding: 10px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    color: white;
+    margin: 5px 15px;
+    width: 350px
+}
+
+#adm-div .dept p{
+    margin: 10px
+}
+
+#adm-div .dept-name{
+    text-align: center;
+}
+
+#adm-div .d-label{
+    font-weight: 600;
 }

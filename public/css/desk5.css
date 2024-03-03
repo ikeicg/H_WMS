@@ -1,0 +1,115 @@
+#rev-case{
+    padding: 10px
+}
+
+.sect-head{
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lookup-form{
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-cid, .search-cid{
+    outline: none;  
+    display: block;
+    margin: 5px;
+    padding: 10px;
+}
+
+.input-cid {
+    flex: auto;
+}
+
+.case-section{
+    width: 80%;
+    margin: auto;
+}
+
+.case-div{
+    background-color: var(--primary-color);
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    margin: 20px
+}
+
+.case-div > div{
+    padding: 5px;
+    margin: 5px;
+}
+
+.case-info{
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+input, button, textarea{
+    outline: none;  
+    display: block;
+    margin: 5px;
+    padding: 10px;
+}
+
+textarea{
+    width: 100%;
+    resize: none;
+}
+
+.input1{
+    width: 70%
+}
+
+.svr-vital{
+    display: flex;
+}
+
+.svr-vital > div{
+    width: 50%
+}
+
+.attr-title{
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.pad-l10{
+    padding: 5px 10px;
+}
+
+.tplan-item, .diagnosis-item{
+    background-color: var(--tertiary-color);
+    margin: 5px auto;
+}
+
+.tplan-item .prod-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.add-prodname{
+    font-weight: bold;
+}
+
+.case-actions {
+    display: flex;
+    justify-content: space-around;
+}
+
+.case-actions button{
+    margin: 0 auto;
+}
+
+.tplan-item .add-doc{
+    padding: 5px;
+    display: flex;
+}

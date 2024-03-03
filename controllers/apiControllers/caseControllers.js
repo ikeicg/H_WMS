@@ -35,6 +35,7 @@ async function transferCase(req, res) {
 
   // grab case using caseId, set active and queued to false
   let caze = await Case.findOne({ _id: caseId });
+  let tTime = Date.now() - caze.addedOn;
   caze.active = false;
   caze.queued = false;
   await caze.save();
@@ -52,6 +53,7 @@ async function transferCase(req, res) {
 
     res.status(200).json({ status: false, message: "Non-existent department" });
   } else {
+    await doc.addProductivityMetric(tTime);
     res.status(200).json(await doc.transferCase(caseId, dept2));
   }
 }
@@ -65,7 +67,9 @@ async function triageAdd(req, res) {
   try {
     caze = await Case.findOne({ _id: caze });
     await caze.addVitals(temp, bPres);
-    await caze.setSeverity(svrt);
+    if (svrt) {
+      await caze.setSeverity(svrt);
+    }
 
     res.status(200).json({ status: true, message: "Successful" });
   } catch (err) {
@@ -127,11 +131,11 @@ async function scheduleCase(req, res) {
 }
 
 async function closeCase(req, res) {
-  const { prodId, caseId, staffId, text } = req.body;
+  const { prodId, caseId, text } = req.body;
 
   try {
     caze = await Case.findOne({ _id: caseId });
-    await caze.documentProcedure(prodId, staffId, text);
+    await caze.documentProcedure(prodId, text);
     await caze.closeProcedure(prodId);
     res.status(200).json({ status: true, message: "Successful" });
   } catch (err) {
@@ -163,6 +167,52 @@ async function recallCase(req, res) {
   }
 }
 
+async function dischargeCase(req, res) {
+  const { caseId } = req.body;
+
+  try {
+    let response = await Department.updateMany(
+      { cases: caseId },
+      { $pull: { cases: caseId } }
+    );
+
+    let caze = await Case.findOne({ _id: caseId }, "open queued active");
+    caze.open = false;
+    caze.queued = false;
+    caze.active = false;
+    await caze.save();
+
+    res.status(200).json({ status: true, message: "successful" });
+  } catch (error) {
+    console.log(error);
+    res.status(422).json({ status: false, message: "failure" });
+  }
+}
+
+async function reactivateCase(req, res) {
+  let { caseId } = req.body;
+
+  let dest = await RouteCase(caseId);
+
+  if (dest) {
+    let dept = await Department.findOne({ name: dest });
+    dept.cases.push(caseId);
+    let res1 = await dept.save();
+
+    if (res1) {
+      let caze = await Case.findOne({ _id: caseId });
+      caze.active = false;
+      caze.queued = true;
+      caze.addedOn = Date.now();
+      caze.save().then((response) => {
+        res.status(200).json({ status: true });
+      });
+    } else {
+      res.status(200).json({ status: false });
+    }
+  }
+}
+
 module.exports = {
   createCase,
   transferCase,
@@ -173,4 +223,6 @@ module.exports = {
   scheduleCase,
   closeCase,
   recallCase,
+  dischargeCase,
+  reactivateCase,
 };

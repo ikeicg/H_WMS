@@ -83,22 +83,6 @@ app.use(dashboardRoutes);
 
 app.use(apiRoutes);
 
-// Testing Routes
-app.get("/test/latmet/:val", async (req, res) => {
-  let deptName = req.params.val;
-
-  let dpt = await Department.findOne({ name: deptName });
-  let latmet = await dpt.latencyMetric();
-  console.log(latmet);
-  res.send("Ok");
-});
-
-let testfunc1 = require("./logic/routingModule");
-app.get("/test/route/", async (req, res) => {
-  let result = await testfunc1(1);
-  res.json({ data: result });
-});
-
 //connect to DB and set up server
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })

@@ -16,6 +16,9 @@ const departmentSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    metrics: {
+      type: [Array],
+    },
   },
   {
     timestamps: true,
@@ -108,7 +111,6 @@ departmentSchema.methods.nextCase = async function () {
         },
       },
       { path: "diagnosis.staff", select: "name" },
-      { path: "treatmentPlan.documentation.staff", select: "name" },
     ]);
 
     cases.push(caze);
@@ -154,6 +156,31 @@ departmentSchema.methods.openDepartment = async function () {
     console.log(error);
     return { status: false, message: "Failure" };
   }
+};
+
+departmentSchema.methods.addProductivityMetric = async function (val) {
+  let cDate = new Date();
+  const todayTimestamp = new Date(
+    cDate.getFullYear(),
+    cDate.getMonth(),
+    cDate.getDate()
+  ).getTime();
+
+  // Check if the latest array holds the current day's metric
+  if (
+    this.metrics.length === 0 ||
+    this.metrics[this.metrics.length - 1][0] !== todayTimestamp
+  ) {
+    // If the latest array doesn't represent the current day
+    this.metrics.push([todayTimestamp, 0, 0]);
+  }
+
+  const lastInd = this.metrics.length - 1;
+  this.metrics[lastInd][2]++;
+  this.metrics[lastInd][1] = Math.floor(
+    (this.metrics[lastInd][1] + val) / this.metrics[lastInd][2]
+  ); // Update the average
+  await this.save();
 };
 
 module.exports = mongoose.model("Department", departmentSchema);

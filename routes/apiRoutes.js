@@ -10,6 +10,8 @@ const {
   scheduleCase,
   closeCase,
   recallCase,
+  dischargeCase,
+  reactivateCase,
 } = require("../controllers/apiControllers/caseControllers");
 const {
   nextCase,
@@ -25,7 +27,11 @@ const router = Router();
 
 router.post("/api/case/newcase", verifyRoles(["FrontDesk"]), createCase);
 
-router.post("/api/case/addvitals", verifyRoles(["Triage"]), triageAdd);
+router.post(
+  "/api/case/addvitals",
+  verifyRoles(["Triage", "Physician"]),
+  triageAdd
+);
 
 router.post("/api/case/transfercase", verifyRoles("*"), transferCase);
 
@@ -39,11 +45,15 @@ router.post("/api/case/adddiagnosis", verifyRoles(["Physician"]), addDiagnosis);
 
 router.post("/api/case/addtreatment", verifyRoles(["Physician"]), addTreatment);
 
-router.post("/api/case/schedule", verifyRoles("+"), scheduleCase);
+router.post("/api/case/schedule", verifyRoles("*"), scheduleCase);
 
 router.post("/api/case/close", verifyRoles("+"), closeCase);
 
 router.post("/api/case/recall", verifyRoles("*"), recallCase);
+
+router.post("/api/case/discharge", verifyRoles(["Physician"]), dischargeCase);
+
+router.post("/api/case/reactivate", verifyRoles(["FrontDesk"]), reactivateCase);
 
 // Department Endpoints
 
