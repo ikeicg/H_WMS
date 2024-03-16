@@ -24,10 +24,6 @@ const staffSchema = new mongoose.Schema(
       ref: "Department",
       required: true,
     },
-    queue: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Case" }],
-      required: true,
-    },
     role: {
       type: String,
       required: true,
@@ -38,11 +34,11 @@ const staffSchema = new mongoose.Schema(
   }
 );
 
-staffSchema.methods.addMe = async function () {
-  await Department.updateOne(
-    { _id: this.departmentId },
-    { $push: { staffId: this._id } }
-  );
-};
+// staffSchema.methods.addMe = async function () {
+//   await Department.updateOne(
+//     { _id: this.departmentId },
+//     { $push: { staffId: this._id } }
+//   );
+// };
 
 module.exports = mongoose.model("Staff", staffSchema);

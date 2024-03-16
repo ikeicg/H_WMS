@@ -18,10 +18,10 @@ const Case = require("./models/case");
 const Staff = require("./models/staff");
 const Message = require("./models/message");
 const Session = require("./models/session");
+require("dotenv").config();
 
 // DB URI
-const dbURI = "mongodb://localhost:27017/hwms";
-// "mongodb://127.0.0.1:27017/hwms";
+const dbURI = process.env.DBURI;
 
 // Create Express  app and a server
 const app = express();
@@ -42,7 +42,7 @@ const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    // maxAge: 1000 * 60 * 20,
+    maxAge: 1000 * 60 * 20,
   },
   store: sessionStore,
   rolling: true,
@@ -88,7 +88,7 @@ mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((conn) => {
     // Start the server
-    server.listen(process.env.PORT || 3000, () => {
+    server.listen(process.env.PORT, () => {
       console.log("Server is Live !!");
     });
   });

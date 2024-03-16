@@ -29,7 +29,7 @@ router.post("/api/case/newcase", verifyRoles(["FrontDesk"]), createCase);
 
 router.post(
   "/api/case/addvitals",
-  verifyRoles(["Triage", "Physician"]),
+  verifyRoles(["Triage", "Physician", "Nursing"]),
   triageAdd
 );
 

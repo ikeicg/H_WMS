@@ -39,7 +39,7 @@
                     <div class="severity-info">
                         <p class="sub-sect">SEVERITY</p>
 
-                        <% if(['Physician', 'Triage'].includes(user.role)){ %>
+                        <% if(['Physician', 'Triage', 'Nursing'].includes(user.role)){ %>
                             <input type="number" name="" max=3 min=1 class="svr-input input1" id="" value="<%= caze.severity %>">
                             <button class="submit-svr pointer">Change</button>
                         <% } else { %>

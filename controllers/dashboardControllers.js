@@ -5,6 +5,8 @@ const Case = require("../models/case");
 const getDashboard = async (req, res) => {
   const path = req.query.path || null;
 
+  const chat2 = req.query.chatroom || null;
+
   const caseId = req.query.cid || null;
 
   let dptName = req.user.role;
@@ -29,10 +31,17 @@ const getDashboard = async (req, res) => {
     ],
   });
 
-  let messages = await Message.find({
-    $or: [{ sender: dptName }, { recipient: dptName }],
-    time: { $gte: Date.now() - 24 * 60 * 60 * 1000 }, // Messages sent within the last 24 hours
-  });
+  let messages = [];
+
+  if (chat2) {
+    messages = await Message.find({
+      $or: [
+        { sender: dptName, recipient: chat2 },
+        { sender: chat2, recipient: dptName },
+      ],
+      time: { $gte: Date.now() - 24 * 60 * 60 * 1000 }, // Messages sent within the last 24 hours
+    });
+  }
 
   let activecases = department.cases.filter((x) => {
     return x.active == true;
@@ -62,6 +71,7 @@ const getDashboard = async (req, res) => {
 
   res.render("dashboard", {
     path: path,
+    chatroom: chat2,
     user: req.user,
     cases: activecases,
     deptStatus: department.open,

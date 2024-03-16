@@ -31,13 +31,12 @@ function addMessage(msg) {
   const messageTime = new Date(msg.time);
   const hours = messageTime.getHours();
   const minutes = messageTime.getMinutes();
-  const period = hours >= 12 ? "pm" : "am";
 
   const div = `
         <div class="${msgType}-msg">
             <div class="msg-sender">${senderOrTarget}</div>
             <div class="msg-body">
-                ${msg.text} --- ${hours}:${minutes} ${period} (${new Date(
+                ${msg.text} --- ${hours}:${minutes} (${new Date(
     msg.time
   ).toDateString()})
             </div>

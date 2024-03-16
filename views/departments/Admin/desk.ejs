@@ -29,6 +29,7 @@
                         <p class="tTime"><span class="d-label">Turnaround Time: </span><%= Math.ceil(elmt[1] / (1000 * 60) ) %> minutes</p>
                         <p class="s-cases"><span class="d-label"> Serviced Cases: </span> <%= elmt[2] %></p>
                         <p class="tot-cases"> <span class="d-label">Queued Cases: </span> <%= x.cases.length %> </p>
+                        <p class="open-state"> <span class="d-label">Open: </span> <%= x.open %> </p>
                     </div>        
                 <% } else { %>
                     <div class="dept">
@@ -36,6 +37,7 @@
                         <p class="tTime"><span class="d-label">Turnaround Time: </span> Nil </p>
                         <p class="s-cases"><span class="d-label"> Serviced Cases: </span> Nil </p>
                         <p class="tot-cases"> <span class="d-label">Queued Cases: </span> <%= x.cases.length %> </p>
+                        <p class="open-state"> <span class="d-label">Open: </span> <%= x.open %> </p>
                     </div>        
                <% } %>
 

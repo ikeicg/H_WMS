@@ -30,8 +30,8 @@ module.exports = async (caseId) => {
       // Set scheduled state for procedures from closed departments to true
       if (closedDpts.includes(x.procedure.department.name)) {
         x.scheduled = true;
-        x.scheduledDate =
-          Date.now() + 1000 * 60 * 60 * (24 - new Date().getHours());
+        x.scheduledDate = Date.now();
+        //  + 1000 * 60 * 60 * (24 - new Date().getHours());
       }
 
       // Find procedures that are still open and not scheduled
